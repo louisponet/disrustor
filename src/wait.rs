@@ -17,11 +17,11 @@ impl WaitStrategy for SpinLoopWaitStrategy {
         SpinLoopWaitStrategy {}
     }
 
-    fn wait_for<F: Fn() -> bool, S: Borrow<AtomicSequence>>(
+    fn wait_for<F: FnMut() -> bool, S: Borrow<AtomicSequence>>(
         &self,
         sequence: Sequence,
         dependencies: &[S],
-        check_alert: F,
+        mut check_alert: F,
     ) -> Option<Sequence> {
         loop {
             let available = min_cursor_sequence(dependencies);
@@ -45,11 +45,11 @@ impl WaitStrategy for BlockingWaitStrategy {
         }
     }
 
-    fn wait_for<F: Fn() -> bool, S: Borrow<AtomicSequence>>(
+    fn wait_for<F: FnMut() -> bool, S: Borrow<AtomicSequence>>(
         &self,
         sequence: Sequence,
         dependencies: &[S],
-        check_alert: F,
+        mut check_alert: F,
     ) -> Option<Sequence> {
         loop {
             let blocked = self.guard.lock().unwrap();

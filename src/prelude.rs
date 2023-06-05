@@ -71,7 +71,7 @@ pub trait Sequencer {
 
 pub trait WaitStrategy: Send + Sync {
     fn new() -> Self;
-    fn wait_for<F: Fn() -> bool, S: Borrow<AtomicSequence>>(
+    fn wait_for<F: FnMut() -> bool, S: Borrow<AtomicSequence>>(
         &self,
         sequence: Sequence,
         dependencies: &[S],
@@ -120,7 +120,7 @@ pub trait EventProducer<'a> {
     where
         I: IntoIterator<Item = U, IntoIter = E>,
         E: ExactSizeIterator<Item = U>,
-        F: Fn(&mut Self::Item, Sequence, &U);
+        F: FnMut(&mut Self::Item, Sequence, &U);
 
     fn drain(self);
 }
