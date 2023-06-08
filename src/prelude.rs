@@ -128,7 +128,7 @@ pub trait EventProducer<'a> {
     where
         I: IntoIterator<Item = U, IntoIter = E>,
         E: ExactSizeIterator<Item = U>,
-        F: Fn(&mut Self::Item, Sequence, &U);
+        F: FnMut(&mut Self::Item, Sequence, &U);
 
     fn drain(self);
 }

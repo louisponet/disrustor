@@ -97,12 +97,12 @@ impl<W: WaitStrategy> Drop for SingleProducerSequencer<W> {
 impl<'a, D: DataProvider<T> + 'a, T, S: Sequencer + 'a> EventProducer<'a> for Producer<D, T, S> {
     type Item = T;
 
-    fn write<F, U, I, E>(&self, items: I, f: F)
+    fn write<F, U, I, E>(&self, items: I, mut f: F)
     where
         D: DataProvider<T>,
         I: IntoIterator<Item = U, IntoIter = E>,
         E: ExactSizeIterator<Item = U>,
-        F: Fn(&mut Self::Item, Sequence, &U),
+        F: FnMut(&mut Self::Item, Sequence, &U),
     {
         let iter = items.into_iter();
         let (start, end) = self.sequencer.next(iter.len());
